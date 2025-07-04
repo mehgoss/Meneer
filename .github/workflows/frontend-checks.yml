@@ -1,0 +1,47 @@
+#.github/workflows/frontend-checks.yml
+
+name: Frontend Code Checks
+
+on:
+  push:
+    branches:
+      - main # Trigger on pushes to the main branch
+  pull_request:
+    branches:
+      - main # Trigger on pull requests targeting the main branch
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest # Use an Ubuntu virtual machine
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x # Use a specific Node.js version, e.g., 20.x
+
+      - name: Install Expo CLI (globally or locally)
+        # You might need this if some expo commands are not found
+        run: |
+          npm install -g eas-cli expo-cli # Install globally for CLI access
+          # Or if you prefer local, ensure it's in package.json devDependencies
+          # npm install
+
+      - name: Navigate to frontend directory and install dependencies
+        run: |
+          cd meneer-app/ # IMPORTANT: Navigate into your React Native project folder
+          npm install
+
+      - name: Run Expo Doctor
+        run: |
+          cd meneer-app/ # IMPORTANT: Navigate into your React Native project folder
+          npx expo doctor # Checks for common project issues
+
+      - name: Check for build readiness (optional - just simulates building)
+        run: |
+          echo "Simulating a build readiness check..."
+          # You could add 'npx expo prebuild --no-install' here if you want to check native module linking without building fully
+          # This just ensures that the project structure is valid for a native build.
